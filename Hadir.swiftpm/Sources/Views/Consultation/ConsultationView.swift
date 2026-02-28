@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 // MARK: - Consultation View
 // The main listening screen — breathing waveform + real-time transcript + SOAP assembly
@@ -41,6 +42,7 @@ struct ConsultationView: View {
             // Left: Waveform + Transcript
             VStack(spacing: HadirTheme.spacingMD) {
                 headerBar
+                micDeniedBanner
                 waveformSection
                 transcriptSection
             }
@@ -70,6 +72,9 @@ struct ConsultationView: View {
             headerBar
                 .padding(.horizontal, HadirTheme.spacingMD)
                 .padding(.top, HadirTheme.spacingSM)
+            
+            micDeniedBanner
+                .padding(.top, HadirTheme.spacingXS)
             
             // Toggle between transcript and SOAP
             Picker("Tampilan", selection: $showSOAPPanel) {
@@ -101,16 +106,24 @@ struct ConsultationView: View {
     
     private var headerBar: some View {
         HStack {
-            // Recording indicator
+            // Recording / Demo indicator
             HStack(spacing: HadirTheme.spacingSM) {
-                PulsingDot(color: .red)
-                Text("MEREKAM")
-                    .font(.system(.caption, design: .rounded, weight: .bold))
-                    .foregroundColor(.red)
+                if coordinator.speechService.isInDemoMode {
+                    Image(systemName: "play.circle.fill")
+                        .foregroundColor(.orange)
+                    Text("MODE DEMO")
+                        .font(.system(.caption, design: .rounded, weight: .bold))
+                        .foregroundColor(.orange)
+                } else {
+                    PulsingDot(color: .red)
+                    Text("MEREKAM")
+                        .font(.system(.caption, design: .rounded, weight: .bold))
+                        .foregroundColor(.red)
+                }
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
-            .background(Color.red.opacity(0.1))
+            .background((coordinator.speechService.isInDemoMode ? Color.orange : Color.red).opacity(0.1))
             .cornerRadius(12)
             
             Spacer()
@@ -156,6 +169,43 @@ struct ConsultationView: View {
                 ProgressView()
                     .scaleEffect(0.8)
             }
+        }
+    }
+    
+    // MARK: - Mic Denied Banner
+    
+    @ViewBuilder
+    private var micDeniedBanner: some View {
+        if coordinator.speechService.isMicDenied {
+            HStack(spacing: HadirTheme.spacingSM) {
+                Image(systemName: "mic.slash.fill")
+                    .foregroundColor(.white)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Akses Mikrofon Ditolak")
+                        .font(.system(.subheadline, design: .rounded, weight: .bold))
+                        .foregroundColor(.white)
+                    Text("Izinkan Hadir di Pengaturan\u00A0\u203A\u00A0Privasi\u00A0\u203A\u00A0Mikrofon")
+                        .font(.system(.caption, design: .rounded))
+                        .foregroundColor(.white.opacity(0.85))
+                }
+                Spacer()
+                Button("Pengaturan") {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
+                    }
+                }
+                .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                .foregroundColor(.white)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(Color.white.opacity(0.25))
+                .cornerRadius(8)
+            }
+            .padding(HadirTheme.spacingMD)
+            .background(HadirTheme.terracotta)
+            .cornerRadius(12)
+            .padding(.horizontal, HadirTheme.spacingMD)
+            .transition(.move(edge: .top).combined(with: .opacity))
         }
     }
     

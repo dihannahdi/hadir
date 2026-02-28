@@ -29,6 +29,9 @@ jobs:
         working-directory: Hadir.swiftpm
         run: swift package resolve || true
 
+      - name: Run algorithm tests
+        run: swift Hadir.swiftpm/Tests/HadirAlgorithmTests.swift
+
       - name: Build for iOS Simulator (iPad)
         working-directory: Hadir.swiftpm
         run: |
