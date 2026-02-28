@@ -1,0 +1,31 @@
+# Hadir.swiftpm build artifacts
+.build/
+*.o
+*.d
+
+# Xcode
+*.xcuserstate
+xcuserdata/
+DerivedData/
+*.xcbkptlist
+*.xcscheme
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# VS Code
+.vscode/settings.json
+.vscode/launch.json
+
+# Swift build cache
+.swiftpm/xcode/
+.swiftpm/plugins/
+
+# Temp
+*.tmp
+*.bak
