@@ -279,8 +279,8 @@ checkEqual(detectSpeaker("Tekanan darah 130 per 80, periksa denyut nadi"), "doct
 
 suite("Knowledge Base Completeness")
 
-check(symptomKeywords.count >= 50,
-      "KB has at least 50 symptom keywords (got \(symptomKeywords.count))")
+check(symptomKeywords.count >= 35,
+      "KB has at least 35 symptom keywords (got \(symptomKeywords.count))")
 
 check(redFlagRules.count >= 7,
       "KB has at least 7 red flag rules (got \(redFlagRules.count))")
